@@ -1,0 +1,8 @@
+## Interface: 80300
+## Author: zaCade
+## Title: FixTransmogOutfits
+## Notes: Fix the fact that legion artifact weapons dont save correctly.
+## Version: @project-version@
+
+# Add-On
+FixTransmogOutfits.lua
