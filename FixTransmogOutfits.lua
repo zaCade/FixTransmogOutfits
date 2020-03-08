@@ -18,17 +18,42 @@ local function GetSlotVisualSourceID(slot, transmogType)
 	return visualSourceID;
 end
 
+-- Store the original set function.
+local OriginalSetPending = OriginalSetPending or C_Transmog.SetPending;
+
+-- Overwrite the function.
+function C_Transmog.SetPending(slotID, transmogType, visualSourceID)
+	-- Since for example selecting a different legion artifact skin doesn't actually unlock the save button,
+	-- we'll have to tell it there has been an update, so it unlocks.
+
+	-- Check if the outfit dropdown exists.
+	if WardrobeTransmogFrame and WardrobeTransmogFrame.OutfitDropDown then
+		-- It exists, tell it to update the save button.
+		WardrobeTransmogFrame.OutfitDropDown:UpdateSaveButton();
+	end
+
+	-- Call the original function.
+	OriginalSetPending(slotID, transmogType, visualSourceID);
+end
+
 -- Store the original save function.
 local OriginalSaveOutfit = OriginalSaveOutfit or C_TransmogCollection.SaveOutfit;
 
 -- Overwrite the function.
 function C_TransmogCollection.SaveOutfit(name, outfit, enchantOne, enchantTwo, icon)
-	-- Checking for nil, just to make sure.
+	-- Since legion artifacts for example save as 0 instead of their actual visual id,
+	-- we'll have to loop over the entire outfit table, and correct it.
+
+	-- Check if we have an outfit to save.
 	if outfit then
-		-- Are we saving something to slot 16 (main hand) and 17 (off hand)?
-		-- If we are, check what we are actually changing to because for some odd reason it changes legion artifact skins as 0.
-		if outfit[16] then outfit[16] = GetSlotVisualSourceID(16, LE_TRANSMOG_TYPE_APPEARANCE) end
-		if outfit[17] then outfit[17] = GetSlotVisualSourceID(17, LE_TRANSMOG_TYPE_APPEARANCE) end
+		-- We are saving an outfit, loop over its slots.
+		for slotID = 0, #outfit do
+			-- Check if we are saving something in this slot.
+			if outfit[slotID] then
+				-- We are saving in this slot, update it.
+				outfit[slotID] = GetSlotVisualSourceID(slotID, LE_TRANSMOG_TYPE_APPEARANCE);
+			end
+		end
 	end
 
 	-- Call the original function.
