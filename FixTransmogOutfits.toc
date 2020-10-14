@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Author: zaCade
 ## Title: FixTransmogOutfits
 ## Notes: Remove IsSourceArtifact() function from WardrobeOutfits.lua functions.
