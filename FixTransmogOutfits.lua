@@ -1,5 +1,19 @@
 if not WardrobeOutfitDropDownMixin then return end
 
+local oldprint = print;
+local function print(...)
+    oldprint("|cFF33FF99[FixTransmogOutfits]|r:", ...);
+end
+
+local tocVersion = select(4, GetBuildInfo());
+if not tocVersion then
+    print("Unable to read interface version.");
+    return;
+elseif tocVersion >= 90100 then
+    print("This AddOn is no longer required since patch 9.1.0");
+    return;
+end
+
 -- Since original functions use a function 'IsSourceArtifact()' that is local to WardrobeOutfits.lua, we have to overwrite them.
 -- Therefor the code below are exact duplicates of the original blizzard code, just without the function mentioned above.
 
